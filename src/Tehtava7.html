@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tuotteen lisääminen</title>
+    <style>
+        body {
+            background-color: #f4f4f9;
+            color: #333;
+            font-size: 20px;
+        }
+
+        input, button {
+            padding: 8px;
+            font-size: 18px;
+            border-radius: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        .tuotelista {
+            background: white;
+            margin-top: 12px;
+            border-left: 5px solid #4CAF50;
+            border-radius: 6px;
+
+
+        }
+
+        #yhteensa {
+            color: #2e7d32;
+            background: white;
+            margin-top: 5px;
+            border-radius: 6px;
+
+        }
+    </style>
+</head>
+<body>
+    <label for="nimi">Nimi:</label>
+    <input type="text" id="nimi">
+    
+    <label for="hinta">Hinta:</label>
+    <input type="text" id="hinta">
+
+    <button onclick="lisaaTuote()">Lisää tuote</button>
+
+    <div id="tuotelista"></div>
+    <br>
+    Yhteensä: <br>
+    <div id="yhteensa">0</div>
+
+    <script>
+        class Tuote {
+            constructor(nimi, hinta) {
+                this.nimi = nimi;
+                this.hinta = hinta;
+            }
+            
+            tulosta() {
+                return `<div class="tuotelista">Tuotteen nimi: ${this.nimi} | Hinta: ${this.hinta} €</div>`;
+            }
+        }
+
+        const tuotelista = [];
+
+        function lisaaTuote() {
+            const nimi = document.getElementById("nimi").value;
+            const hinta = document.getElementById("hinta").value;
+            const tuote = new Tuote(nimi, hinta);
+            
+            tuotelista.push(tuote);
+
+            let tulostus = "";
+            for (let i = 0; i < tuotelista.length; i++) {
+                tulostus += tuotelista[i].tulosta();
+            }
+
+            //päivitetään tuotelista div
+            document.getElementById("tuotelista").innerHTML = tulostus;
+
+            //lasketaan hinnat
+            laskeHinnat();
+        }
+
+            function laskeHinnat() {
+            let summa = 0;
+            for (let i = 0; i < tuotelista.length; i++) {
+                summa += parseFloat(tuotelista[i].hinta);
+            }
+
+            document.getElementById("yhteensa").innerHTML = summa;
+        }
+
+        
+    </script>
+</html>

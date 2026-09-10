@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lampun tila</title>
+</head>
+<body>
+    <h2>Lampun tila</h2>
+    <p id="lampuntila">🔮</p>
+    <p><button onclick="kytkin()">Kytkin</button></p>
+    
+    <script>
+        class Lamppu {
+            constructor() {
+                this.tila = "🔮";
+            }
+
+            sytyta() {
+                this.tila = "💡";
+            }
+
+            sammuta() {
+                this.tila = "🔮";
+            }
+        }
+
+        const lamppu = new Lamppu();
+        
+        //haen tässä suoraan lampuntilan id:n perusteella
+        const lampuntila = document.getElementById("lampuntila");
+
+        //tarkastetaan suoraan onko lamppu pois päältä, jos on niin suoritetaan lampun sytytys, muuten sammutus
+        function kytkin() {
+            if (lamppu.tila === "🔮") {
+                lamppu.sytyta();
+            } else {
+                lamppu.sammuta();
+            }
+
+
+            lampuntila.textContent = lamppu.tila;
+            console.log(lamppu.tila);
+        }
+    </script>
+</body>
+</html>
