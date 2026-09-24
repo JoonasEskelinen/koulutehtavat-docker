@@ -359,4 +359,4 @@ Hyödyllisin työskentelytapa oli lyhyt kierto: pyydä, kokeile selaimessa ja pu
 4. **Tekoälyn käyttö** — luvut 3 ja 5.
 5. **Itsearviointi** — luku 6.
 
-Laitan vielä mukaan projektin README tiedoston, sekä voin näyttää koodia tarvittaessa vaikka muistitikulta, koska en ole laittanut tätä projektia githubiin (versionhallinta on tullut periaatteessa palvelimella: kehitän koodia windowsissa, vien toimivan muutoksen palvelimelle).
+Laitan vielä mukaan projektin README tiedoston.
