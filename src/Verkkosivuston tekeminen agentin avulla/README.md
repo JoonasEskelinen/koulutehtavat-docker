@@ -1,57 +1,97 @@
-# GM-Maestro
+# GM-Maestro — muistilista
 
-**Draftaa. Treidaa. Päätä ketkä pelaa.**
+- Tuotanto: [gm-maestro.fi](https://gm-maestro.fi)
+- Tuki: `tuki@gm-maestro.fi` (Namecheap/cPanel + Gmail-sovelluksessa erillinen tili)
 
-GM-Maestro on suomenkielinen NHL-manageripeli kaveriporukoille. Liiga, draft, kokoonpano, treidit ja fantasy-pisteet ovat samassa palvelussa. NHL-tilastoja ei kerätä käsin: ne haetaan otteluiden jälkeen ja pisteet lasketaan liigan säännöillä.
+---
 
-Julkinen osoite on [gm-maestro.fi](https://gm-maestro.fi). Palvelu on tällä hetkellä ilmainen.
+## Mitä projekti on (lyhyesti)
 
-## Mitä pelissä voi tehdä
+NHL-fantasymanageri kaveriporukalle: liiga, snake-draft, kokoonpano, treidit, vapaiden pelaajien markkina, sarjataulukko. NHL-tilastot haetaan rajapinnasta; fantasy-pisteet lasketaan palvelimella. React-käyttöliittymä + Node/Express-API + SQLite. Suomeksi, PWA.
 
-1. **Luo tili** sähköpostilla ja nimellä. Tuotannossa osoite vahvistetaan linkillä ennen liigoihin pääsyä.
-2. **Perusta liiga tai liity koodilla.** Perustaja valitsee joukkueiden määrän, draft-kierrokset, nostokiintiön ja liigan keston (koko NHL-kausi tai kiinteä päättymispäivä). Sama käyttäjä voi olla useassa liigassa.
-3. **Draftaa snake-draftissa.** Vuorot kiertävät edestakaisin. Pelaajia voi hakea ja suodattaa pelipaikan mukaan. Draft käynnistyy, kun paikat ovat täynnä. Oletus on 12 kierrosta eli 12 pelaajaa joukkueessa. Kentälliseen kuuluu 1 maalivahti, 2 puolustajaa ja 3 hyökkääjää; ne täytetään ennen vapaita varauksia.
-4. **Aseta kokoonpano.** Aktiivinen kentällinen näkyy kaukalonäkymässä, loput ovat vaihtopenkillä. Fantasy-pisteitä kertyy vain kentällä oleville, NHL:n runkosarjasta ja pudotuspeleistä. Vaihto lukittuu pelikierroksen ensimmäiseen otteluun (Suomen aika) ja aukeaa taas, kun kierroksen pelit on pelattu ja pisteet päivitetty.
-5. **Treidaa.** Manageri tarjoaa omia pelaajiaan toisen joukkueen pelaajista. Eri määrä on mahdollinen, esimerkiksi kaksi yhdestä. Vastapuoli hyväksyy tai hylkää. Rosterissa on oltava vähintään 8 pelaajaa, ja molemmille pitää jäädä täysi kentällinen. Tyhjä paikka täyttyy treidillä, ei markkinalta. Pisteet jäävät joukkueelle, joka omisti pelaajan ottelupäivänä.
-6. **Nosta vapaiden pelaajien markkinalta.** Nosto on aina yksi sisään ja yksi ulos. Se kuluttaa liigan nostokiintiön (0 = rajoittamaton). Markkina ja treidit aukeavat draftin jälkeen.
-7. **Seuraa kautta.** Sarjataulukko, avoimet ja tehdyt treidit sekä nostot ovat Tilastot-sivulla. Otteluohjelma näyttää NHL-kierrokset Suomen ajassa. Pelaajakortista näkee, mistä pisteet kertyivät viime kierroksella tai koko kaudella.
+---
 
-Draft-välilehti poistuu kauden alettua. Varausjärjestys jää talteen Draft-historiassa.
+## Pelin kulku
 
-## Julkiset sivut
+1. Tili (sähköposti + vahvistus tuotannossa).
+2. Liiga: perustaja tai liittyminen koodilla; asetukset (joukkueet, draft-kierrokset, nostokiintiö, kesto).
+3. Snake-draft, pelaajahaku; kentällinen (1 MV, 2 P, 3 H) ennen vapaita varauksia.
+4. Kausi: lineup, lukko pelikierroksen mukaan; pisteet vain kentällä.
+5. Treidit ja markkina draftin jälkeen; tilastot-sivu (sarja + tapahtumat).
+6. Draft-välilehti poistuu kauden alettua; historia säilyy.
 
-Kirjautumatta näkyvät etusivu, peliohjeet, palvelukuvaus, tietosuojaseloste, käyttöehdot ja evästekuvaus. Tuki: tuki@gm-maestro.fi.
+Julkiset sivut ilman kirjautumista: etusivu, ohjeet, lakitekstit, palvelukuvaus.
 
-Sovelluksen voi asentaa puhelimeen tai tietokoneelle (PWA). Käyttöliittymä toimii myös mobiilissa.
+---
 
-## Platform
+## Tietokanta — miten toteutettu ja mistä löytyy
 
-`/platform` on erillinen ylläpitonäkymä. Se ei käytä pelaajan tunnuksia: sisään kirjaudutaan palvelimen ylläpitosalasanalla (`PLATFORM_ADMIN_PASSWORD`).
+GM-Maestro käyttää relaatiotietokantaa SQLite-muodossa. Se on yksi tiedosto palvelimella, ei erillistä tietokantapalvelinta kuten PostgreSQL. Backend (Node.js) käyttää kirjastoa `better-sqlite3` ja lukee sekä kirjoittaa tietokantaan SQL-kyselyillä.
 
-Ylläpitäjä näkee yhteenvedon käyttäjistä, vahvistetuista sähköposteista, liigoista, drafteista ja treideistä. Sivulta voi avata käyttäjän tai liigan, vaihtaa liigan perustajaa, nollata käyttäjän salasanan ja poistaa käyttäjän tai liigan. Liigan poisto vaatii nimen vahvistuksen.
+Käyttäjät, liigat, draftit, rosterit, treidit ja fantasy-pisteet tallennetaan tauluihin, joilla on viiteavaimet (esim. liiga → jäsenet → pelaajat). Skeema ja pienet päivitykset ovat koodissa; kun API käynnistyy, taulut luodaan tai päivitetään automaattisesti.
 
-## Kolmannen osapuolen palvelut
+**Kaavio:** selain → REST API (`server/src/`) → SQL → `app.db`.
 
-| Palvelu | Käyttö |
-|---|---|
-| **[Resend](https://resend.com)** | Tilin vahvistussähköposti. Kutsu menee Resendin rajapintaan (`api.resend.com`). Lähettäjä on oletuksena `GM-Maestro <noreply@gm-maestro.fi>`. Linkki vanhenee 24 tunnissa, ja käyttäjä voi pyytää uuden. Ilman `RESEND_API_KEY`-avainta (paikallinen kehitys) tili vahvistuu automaattisesti eikä viestiä lähde. |
-| **NHL:n julkinen rajapinta** (`api-web.nhle.com`) | Pelaajapooli, otteluohjelma ja boxscore-tilastot. Synkronointi ajetaan oletuksena aamulla Suomen aikaa, kun peliyön tulokset ovat saatavilla. |
+| Asia | Paikka |
+|------|--------|
+| Skeema, `CREATE TABLE`, käynnistyksen `ALTER`-päivitykset | `server/src/db.js` |
+| Kehityksen tietokantatiedosto | `server/data/app.db` |
+| Tuotannon polku (jos eri) | `SQLITE_PATH` env (ks. `.env.example`) |
+| Varmuuskopiot | `server/src/dbBackup.js` |
+| Liiga-/draft-/roster-logiikka (SQL-kyselyt) | `server/src/leagues.js` ja muut moduulit |
 
-Analytiikkaa, maksupalvelua tai muuta ulkoista seurantaa ei ole kytketty. Salasanat tallennetaan tiivisteinä (bcrypt). Alustan istunto on erillinen JWT, joka vanhenee kahdeksassa tunnissa.
+Frontend ei koske tietokantaan. `app.db` ei kuulu gitiin; repossa on rakenne ja logiikka, data syntyy käytössä.
 
-## Tekninen rakenne
+SQLite-asetukset (`db.js`): WAL, `foreign_keys = ON`, `busy_timeout`.
 
-Frontend ja backend ovat erillisiä workspace-paketteja.
+Esimerkkitauluja: `users`, `leagues`, `league_members`, `draft_picks`, `rosters`, treidit/nostot, vahvistustokenit, jne.
 
-| Osa | Teknologiat |
-|---|---|
-| **Frontend** (`client/`) | React, TypeScript, Vite, Tailwind CSS, React Router, PWA |
-| **Backend** (`server/`) | Node.js, Express, SQLite (`better-sqlite3`) |
-| **Sähköposti** | Resend HTTP API |
-| **Tilastot** | NHL Web API, automaattinen synkronointi ja pistelaskenta |
+---
 
-Paikallinen kehitys käynnistyy juuresta komennolla `npm run dev` (API ja käyttöliittymä). Tuotantobuild on `npm run build`. Ympäristömuuttujien malli on `.env.example`.
+## Arkkitehtuuri
+
+| Kerros | Teknologia | Kansio |
+|--------|------------|--------|
+| UI | React (näkymät ja komponentit), TypeScript (Koodi), Vite (build ja dev-palvelin), Tailwind (tyylit), PWA (asennus puhelimeen) | `client/` |
+| API | Node.js (palvelin), Express (HTTP-reitit), JWT (kirjautuneen istunto), bcrypt (salasanojen tiiviste) | `server/src/` |
+| Tietokanta | SQLite (yksi tiedosto, relaatiotaulut), better-sqlite3 (SQL Node-puolella) | `server/data/app.db` |
+| Tilastot | NHL Web API (ottelut ja boxscore), synkka (aamulla peliyön jälkeen), pistelaskenta (liigan säännöt → fantasy-pisteet) | `server/src/nhl*.js`, `scoring*.js` |
+| Sähköposti | Resend (vain lähetys), vahvistuslinkki rekisteröintiin (`emailVerify.js`) | `server/src/email.js`, `emailVerify.js` |
+
+Repon juuri: npm workspaces (`client` + `server`). Dev: `npm run dev`. Build: `npm run build`. Env-malli: `.env.example`.
+
+---
+
+## Platform (ylläpito)
+
+- Reitit: `/platform/login`, `/platform`
+- Salasana: `PLATFORM_ADMIN_PASSWORD` (ei pelaajatilejä)
+- Koodi: `server/src/platformAdmin.js`, `client/src/pages/platform/`
+- Toiminnot: käyttäjät, liigat, salasanan nollaus, komission vaihto, poistot
+
+---
+
+## Ulkoiset palvelut
+
+| Palvelu | Mihin |
+|---------|--------|
+| Resend | Rekisteröinnin vahvistusviesti (`noreply@gm-maestro.fi`) |
+| NHL API | Pelaajapooli, otteluohjelma, boxscore |
+| Namecheap hosting | `tuki@` postilaatikko (IMAP); DNS Domainhotellissa |
+| Hetzner VPS | API + staattinen frontend (`client/dist`) |
+
+Ei analytiikkaa / maksuja tuotannossa (tällä hetkellä).
+
+---
+
+## Reitit / sivut (muistin tueksi)
+
+- Julkinen: `/`, `/login`, `/register`, `/ohjeet`, `/tietosuoja`, `/kayttoehdot`, `/evasteet`, `/palvelukuvaus`
+- Peli: `/home`, `/league/:id/roster|draft|pelipaiva|tilastot`
+- Config: `client/src/config/site.ts`, reitit `client/src/App.tsx`
+
+---
 
 ## Lisenssi
 
-Yksityinen projekti. Kaikki oikeudet pidätetään.
+Yksityinen projekti.
