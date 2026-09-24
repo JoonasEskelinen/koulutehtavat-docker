@@ -1,4 +1,4 @@
-# GM-Maestro — muistilista
+# GM-Maestro
 
 - Tuotanto: [gm-maestro.fi](https://gm-maestro.fi)
 - Tuki: `tuki@gm-maestro.fi` (Namecheap/cPanel + Gmail-sovelluksessa erillinen tili)
