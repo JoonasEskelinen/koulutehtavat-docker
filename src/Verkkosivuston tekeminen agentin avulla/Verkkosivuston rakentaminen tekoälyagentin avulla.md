@@ -6,7 +6,7 @@
 **Tekoäly:** Cursor-agentti, kielimalleina composer 2.5, grok 4,6, opus 5,5. Käyttö on ilmoitettu tässä dokumentissa.
 
 
-Informaatio on peliohjeissa, palvelukuvauksessa ja lakisivuilla. Lokimerkinnät on koottu oikeista kehityskeskusteluista (toukokuu–syyskuu 2026). Tekoälyn ehdotuksia on muokattu, hylätty ja korjattu itse. Vastuu sisällöstä ja toiminnasta on opiskelijalla.
+Tehtävän informaatio on peliohjeissa, palvelukuvauksessa ja lakisivuilla. Lokimerkinnät on koottu oikeista kehityskeskusteluista (toukokuu–syyskuu 2026). Tekoälyn ehdotuksia on muokattu, hylätty ja korjattu itse. Vastuu sisällöstä ja toiminnasta on minulla itsellä.
 
 
 ---
